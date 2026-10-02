@@ -1640,5 +1640,5 @@ def admin_ip_unban():
 
 
 if __name__ == "__main__":
-    port = int(os.environ.get("SERVER_PORT", 8008))
+    port = int(os.environ.get("PORT", os.environ.get("SERVER_PORT", 8008)))
     app.run(host="0.0.0.0", port=port, threaded=True)
