@@ -1,0 +1,27 @@
+{
+  "name": "m7mad-ff-panel",
+  "version": "2.0.0",
+  "description": "M7MAD_FF Hosting Panel - Python + Node.js",
+  "private": true,
+  "author": "M7MAD_FF",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "scripts": {
+    "start": "python app.py",
+    "dev": "python app.py",
+    "check": "python -c \"import flask, psutil, werkzeug; print('✅ All imports OK')\""
+  },
+  "keywords": [
+    "hosting",
+    "panel",
+    "free-fire",
+    "python",
+    "flask"
+  ],
+  "optionalDependencies": {},
+  "dependencies": {},
+  "devDependencies": {}
+}

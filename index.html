@@ -1,0 +1,1744 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>M7MAD_FF PANEL</title>
+  <style>
+    :root {
+      --bg1: #0a0e1a;
+      --bg2: #111827;
+      --glass: rgba(255,255,255,.06);
+      --border: rgba(255,255,255,.10);
+      --muted: rgba(255,255,255,.7);
+      --text: #f0f4ff;
+      --accent: #7c3aed;
+      --accent2: #2563eb;
+      --accent3: #06b6d4;
+      --danger: #ef4444;
+      --ok: #34d399;
+      --warn: #f59e0b;
+      --shadow: 0 18px 60px rgba(0,0,0,.7);
+      --radius: 20px;
+      --sidebar-w: 240px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% 10%, rgba(124,58,237,.12), transparent 50%),
+        radial-gradient(circle at 90% 90%, rgba(6,182,212,.08), transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(37,99,235,.05), transparent 70%),
+        var(--bg1);
+      background-attachment: fixed;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        radial-gradient(2px 2px at 10% 20%, rgba(255,255,255,.3), transparent),
+        radial-gradient(2px 2px at 30% 60%, rgba(255,255,255,.2), transparent),
+        radial-gradient(2px 2px at 50% 30%, rgba(255,255,255,.3), transparent),
+        radial-gradient(2px 2px at 70% 80%, rgba(255,255,255,.2), transparent),
+        radial-gradient(2px 2px at 90% 40%, rgba(255,255,255,.3), transparent);
+      background-size: 250px 250px;
+      opacity: .35;
+      animation: twinkle 7s infinite alternate;
+    }
+    @keyframes twinkle { 0%{opacity:.2} 100%{opacity:.7} }
+
+    /* ═══════════════════════════════════════════════════════════
+       LAYOUT: Sidebar + Main
+       ═══════════════════════════════════════════════════════════ */
+    .layout {
+      display: flex;
+      min-height: 100vh;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ───── Sidebar ───── */
+    .sidebar {
+      width: var(--sidebar-w);
+      background: rgba(10,14,26,.85);
+      border-right: 1px solid var(--border);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 30;
+      transition: transform .3s ease;
+    }
+    .sidebar-logo {
+      padding: 20px 18px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: .5px;
+    }
+    .sidebar-logo .ico {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent3));
+      display: grid;
+      place-items: center;
+      font-size: 20px;
+      box-shadow: 0 0 30px rgba(124,58,237,.25);
+      flex-shrink: 0;
+    }
+    .sidebar-logo span {
+      background: linear-gradient(135deg, var(--accent), var(--accent3));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 12px 10px;
+      overflow-y: auto;
+    }
+    .sidebar-nav .section-title {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--muted);
+      font-weight: 700;
+      padding: 14px 12px 8px;
+      opacity: .6;
+    }
+    .sidebar-nav a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 14px;
+      border-radius: 12px;
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all .2s ease;
+      margin-bottom: 4px;
+      border: 1px solid transparent;
+    }
+    .sidebar-nav a:hover {
+      background: rgba(124,58,237,.12);
+      border-color: rgba(124,58,237,.25);
+      transform: translateX(3px);
+    }
+    .sidebar-nav a.active {
+      background: linear-gradient(135deg, rgba(124,58,237,.25), rgba(37,99,235,.15));
+      border-color: var(--accent);
+      box-shadow: 0 8px 25px rgba(124,58,237,.15);
+    }
+    .sidebar-nav a .ico { font-size: 16px; width: 22px; text-align: center; }
+
+    .sidebar-bottom {
+      padding: 12px 10px;
+      border-top: 1px solid var(--border);
+    }
+    .sidebar-bottom a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 14px;
+      border-radius: 12px;
+      color: #fca5a5;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all .2s ease;
+      border: 1px solid transparent;
+    }
+    .sidebar-bottom a:hover {
+      background: rgba(239,68,68,.12);
+      border-color: rgba(239,68,68,.3);
+    }
+
+    /* ───── Main Area ───── */
+    .main-area {
+      flex: 1;
+      margin-left: var(--sidebar-w);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ───── Topbar ───── */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      background: rgba(10,14,26,.75);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .mobile-toggle {
+      display: none;
+      background: var(--glass);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .host-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 12px;
+      background: var(--glass);
+      border: 1px solid var(--border);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+    }
+    .host-status .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--ok);
+      box-shadow: 0 0 12px rgba(52,211,153,.5);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity: 1; }
+      50% { opacity: .5; }
+    }
+    .topbar-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* ───── Buttons ───── */
+    .btn {
+      border: 1px solid var(--border);
+      background: var(--glass);
+      color: var(--text);
+      padding: 9px 16px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 12px;
+      transition: all .2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: inherit;
+      white-space: nowrap;
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      background: rgba(255,255,255,.12);
+      border-color: var(--accent);
+    }
+    .btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      border: 0;
+      box-shadow: 0 8px 30px rgba(124,58,237,.25);
+    }
+    .btn-primary:hover { box-shadow: 0 12px 40px rgba(124,58,237,.4); }
+    .btn-danger {
+      background: rgba(239,68,68,.12);
+      border-color: rgba(239,68,68,.25);
+      color: #fca5a5;
+    }
+    .btn-danger:hover { background: rgba(239,68,68,.2); border-color: var(--danger); }
+    .btn-ok {
+      background: rgba(52,211,153,.12);
+      border-color: rgba(52,211,153,.25);
+      color: #6ee7b7;
+    }
+    .btn-ok:hover { background: rgba(52,211,153,.2); border-color: var(--ok); }
+    .btn-mini { padding: 6px 12px; font-size: 11px; border-radius: 10px; }
+
+    /* ───── Container ───── */
+    .container {
+      max-width: 1200px;
+      margin: 24px auto 60px;
+      padding: 0 18px;
+      width: 100%;
+    }
+
+    /* ───── Server Cards ───── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 18px;
+    }
+    @media (max-width: 640px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+    .card {
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+      cursor: pointer;
+      transition: all .3s ease;
+      position: relative;
+      overflow: hidden;
+      min-height: 120px;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent3));
+      opacity: 0;
+      transition: opacity .3s ease;
+    }
+    .card:hover {
+      transform: translateY(-6px);
+      border-color: var(--accent);
+      box-shadow: 0 20px 60px rgba(124,58,237,.15);
+    }
+    .card:hover::before { opacity: 1; }
+    .srv-title { font-weight: 800; font-size: 16px; letter-spacing: .3px; color: #fff; }
+    .srv-sub { margin-top: 6px; color: var(--muted); font-size: 13px; line-height: 1.4; }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,.25);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .4px;
+      margin-top: 12px;
+      text-transform: uppercase;
+    }
+    .dot { width: 8px; height: 8px; border-radius: 50%; }
+    .pill.running .dot { background: var(--ok); box-shadow: 0 0 12px rgba(52,211,153,.5); }
+    .pill.installing .dot { background: var(--warn); box-shadow: 0 0 12px rgba(245,158,11,.5); }
+    .pill.banned .dot { background: var(--danger); box-shadow: 0 0 12px rgba(239,68,68,.5); }
+    .pill.offline .dot { background: rgba(255,255,255,.3); }
+
+    /* ───── Server View ───── */
+    #serverView { display: none; }
+    .header-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .hleft h1 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent), var(--accent3));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hleft .muted { margin-top: 4px; color: var(--muted); font-size: 13px; }
+    .tabs { display: flex; gap: 10px; flex-wrap: wrap; }
+    .tab {
+      border: 1px solid var(--border);
+      background: var(--glass);
+      color: var(--text);
+      padding: 10px 16px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 12px;
+      transition: all .2s ease;
+    }
+    .tab.active {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      border: 0;
+      box-shadow: 0 8px 30px rgba(124,58,237,.25);
+    }
+    .tab:hover { transform: translateY(-1px); }
+
+    .panel {
+      margin-top: 16px;
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border-radius: var(--radius);
+      backdrop-filter: blur(16px);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 16px;
+      padding: 16px;
+    }
+    @media (max-width: 980px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    /* ───── Console + Terminal ───── */
+    .console-wrap {
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: rgba(0,0,0,.5);
+      overflow: hidden;
+    }
+    .console {
+      flex: 1;
+      padding: 16px;
+      height: 480px;
+      overflow-y: auto;
+      font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      color: rgba(220,230,255,.85);
+    }
+    .console::-webkit-scrollbar { width: 8px; }
+    .console::-webkit-scrollbar-track { background: rgba(0,0,0,.3); }
+    .console::-webkit-scrollbar-thumb { background: rgba(124,58,237,.4); border-radius: 4px; }
+
+    /* ✅ Terminal Input Bar */
+    .terminal-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      background: rgba(0,0,0,.7);
+      border-top: 1px solid var(--border);
+    }
+    .terminal-bar .prompt {
+      color: var(--accent3);
+      font-weight: 700;
+      font-size: 14px;
+      font-family: 'JetBrains Mono', monospace;
+      padding: 0 6px;
+    }
+    .terminal-bar input {
+      flex: 1;
+      padding: 10px 14px;
+      background: rgba(0,0,0,.5);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      outline: none;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      transition: all .2s ease;
+    }
+    .terminal-bar input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(124,58,237,.15);
+    }
+    .terminal-bar button {
+      padding: 10px 18px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      border: 0;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all .2s ease;
+      font-family: inherit;
+    }
+    .terminal-bar button:hover {
+      box-shadow: 0 8px 25px rgba(124,58,237,.35);
+      transform: translateY(-1px);
+    }
+    .terminal-bar button:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* ───── Side Panel ───── */
+    .side { display: flex; flex-direction: column; gap: 10px; }
+    .btn-block {
+      width: 100%;
+      padding: 12px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: var(--glass);
+      color: var(--text);
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .2s ease;
+      text-align: center;
+      font-family: inherit;
+      font-size: 13px;
+    }
+    .btn-block:hover {
+      transform: translateY(-2px);
+      background: rgba(255,255,255,.08);
+      border-color: var(--accent);
+    }
+    .btn-block:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+    .btn-block.primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      border: 0;
+      box-shadow: 0 8px 30px rgba(124,58,237,.25);
+    }
+    .btn-block.danger {
+      background: rgba(239,68,68,.12);
+      border-color: rgba(239,68,68,.25);
+      color: #fca5a5;
+    }
+
+    .stat {
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,.2);
+      border-radius: 14px;
+      padding: 12px 14px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .stat .ico {
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: var(--glass);
+      border: 1px solid var(--border);
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+    .stat small {
+      display: block;
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 11px;
+      letter-spacing: .3px;
+    }
+    .stat b { display: block; margin-top: 2px; font-size: 14px; }
+
+    #mainFileTxt { color: var(--accent3); cursor: pointer; }
+    #mainFileTxt:hover { text-decoration: underline; }
+
+    /* ✅ Runtime Selector */
+    .runtime-select {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,.3);
+      color: var(--text);
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      font-family: inherit;
+      outline: none;
+    }
+    .runtime-select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(124,58,237,.15);
+    }
+
+    /* ───── File Manager ───── */
+    .fm-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .path { color: var(--muted); font-size: 12px; margin-top: 4px; }
+    .crumb a { color: var(--accent); text-decoration: none; font-weight: 700; }
+    .crumb .sep { color: rgba(255,255,255,.3); padding: 0 6px; }
+
+    .table { width: 100%; border-collapse: collapse; }
+    .table th, .table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      font-size: 13px;
+      text-align: left;
+    }
+    .table th {
+      color: var(--muted);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: .5px;
+    }
+    .name-link { color: var(--accent); font-weight: 700; cursor: pointer; }
+    .name-link:hover { text-decoration: underline; }
+    .row-actions { white-space: nowrap; }
+
+    /* ───── Modals ───── */
+    .modal-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.8);
+      display: none;
+      align-items: center; justify-content: center;
+      z-index: 100;
+      padding: 18px;
+      backdrop-filter: blur(8px);
+    }
+    .modal {
+      width: 100%;
+      max-width: 480px;
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(20px);
+      padding: 24px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal h3 { margin: 0 0 16px; font-size: 18px; }
+    .modal label {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 600;
+      margin: 12px 0 6px;
+    }
+    .modal input, .modal select {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,.3);
+      color: var(--text);
+      outline: none;
+      font-size: 14px;
+      font-family: inherit;
+    }
+    .modal input:focus, .modal select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(124,58,237,.15);
+    }
+
+    /* ✅ ENV Editor */
+    .env-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .env-row input {
+      flex: 1;
+      padding: 10px 12px;
+      font-size: 13px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .env-row input:first-child { max-width: 180px; }
+    .env-row button {
+      padding: 8px 12px;
+      background: rgba(239,68,68,.15);
+      border: 1px solid rgba(239,68,68,.3);
+      color: #fca5a5;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .env-row button:hover { background: rgba(239,68,68,.25); }
+
+    /* ───── Editor Modal ───── */
+    #editor-modal {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.85);
+      z-index: 120;
+      padding: 18px;
+      backdrop-filter: blur(8px);
+    }
+    .editor {
+      height: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: rgba(10,14,22,.9);
+      backdrop-filter: blur(16px);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .editor-top {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .editor-top .fn { font-weight: 700; color: var(--accent); word-break: break-all; }
+    #ed-area {
+      flex: 1;
+      background: transparent;
+      color: rgba(220,230,255,.9);
+      border: 0;
+      outline: none;
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-size: 13px;
+      padding: 16px;
+      resize: none;
+      line-height: 1.6;
+    }
+
+    /* ───── Profile ───── */
+    .pf-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+    .pf-row b { color: var(--accent); word-break: break-all; text-align: right; }
+
+    /* ───── Settings ───── */
+    .set-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .switch {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      background: rgba(255,255,255,.12);
+      border-radius: 999px;
+      cursor: pointer;
+      transition: .25s ease;
+      border: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .switch.on { background: linear-gradient(135deg, var(--accent), var(--accent2)); }
+    .switch:after {
+      content: '';
+      position: absolute;
+      top: 2px; left: 2px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #fff;
+      transition: .25s ease;
+    }
+    .switch.on:after { left: 22px; }
+
+    .swatch {
+      width: 28px;
+      height: 28px;
+      border-radius: 10px;
+      border: 2px solid var(--border);
+      cursor: pointer;
+      transition: .15s ease;
+    }
+    .swatch:hover { border-color: var(--accent); transform: scale(1.05); }
+    .swatch.active { border-color: var(--accent); box-shadow: 0 0 20px rgba(124,58,237,.3); }
+
+    #annBar {
+      max-width: 1200px;
+      margin: 14px auto 0;
+      padding: 12px 20px;
+      border: 1px solid rgba(124,58,237,.3);
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(124,58,237,.12), rgba(6,182,212,.08));
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--text);
+      backdrop-filter: blur(8px);
+    }
+
+    /* ───── Responsive ───── */
+    @media (max-width: 900px) {
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); }
+      .main-area { margin-left: 0; }
+      .mobile-toggle { display: inline-flex; }
+      .sidebar.open + .main-area::before,
+      .sidebar.open::after {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,.5);
+        z-index: 25;
+      }
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      padding: 14px 20px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 13px;
+      box-shadow: 0 12px 40px rgba(124,58,237,.35);
+      z-index: 200;
+      animation: slideIn .3s ease;
+    }
+    .toast.err { background: linear-gradient(135deg, #ef4444, #dc2626); }
+    .toast.ok { background: linear-gradient(135deg, #34d399, #059669); }
+    @keyframes slideIn {
+      from { transform: translateY(80px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SIDEBAR
+       ═══════════════════════════════════════════════════════════ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="ico">🚀</div>
+      <span>M7MAD_FF</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="section-title">Navigation</div>
+      <a id="navHome" onclick="goHome()" class="active">
+        <span class="ico">🏠</span> Home
+      </a>
+      <a id="navAdmin" href="/admin" style="display:none">
+        <span class="ico">👑</span> Admin Panel
+      </a>
+
+      <div class="section-title">Account</div>
+      <a onclick="openProfile()">
+        <span class="ico">👤</span> Profile
+      </a>
+      <a onclick="openSettings()">
+        <span class="ico">⚙️</span> Settings
+      </a>
+
+      <div class="section-title">Community</div>
+      <a onclick="window.open('https://t.me/Zx_Zx666','_blank')">
+        <span class="ico">👑</span> Owner
+      </a>
+      <a onclick="window.open('https://t.me/xAyOuBiSKinG','_blank')">
+        <span class="ico">📢</span> Channel
+      </a>
+      <a onclick="window.open('https://youtube.com/@tzx_team','_blank')">
+        <span class="ico">▶️</span> YouTube
+      </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <a onclick="location.href='/logout'">
+        <span class="ico">🚪</span> Logout
+      </a>
+    </div>
+  </aside>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       MAIN AREA
+       ═══════════════════════════════════════════════════════════ -->
+  <div class="main-area">
+
+    <!-- Topbar -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <button class="mobile-toggle" onclick="toggleSidebar()">☰</button>
+        <div class="host-status">
+          <span class="dot"></span>
+          <span id="pyHostTxt">Python Host: loading...</span>
+        </div>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn btn-primary" id="newBtn" onclick="newServerPrompt()">➕ New Server</button>
+      </div>
+    </div>
+
+    <!-- Announcement -->
+    <div id="annBar" style="display:none; max-width:1200px; margin:14px auto 0;">
+      📢 <span id="annTxt"></span>
+    </div>
+
+    <!-- HOME VIEW -->
+    <div class="container" id="homeView">
+      <div class="grid" id="cardsContainer"></div>
+    </div>
+
+    <!-- SERVER VIEW -->
+    <div class="container" id="serverView">
+      <div class="header-row">
+        <div class="hleft">
+          <h1 id="srvHeader">SERVER</h1>
+          <div class="muted" id="srvSub">Manage your server</div>
+        </div>
+        <div class="tabs">
+          <button class="tab active" id="tabConsole" onclick="switchTab('console')">🖥️ Console</button>
+          <button class="tab" id="tabFiles" onclick="switchTab('files')">📁 Files</button>
+          <button class="tab" id="tabEnv" onclick="switchTab('env')">🌐 ENV</button>
+          <button class="tab" id="tabSettings" onclick="switchTab('settings')">⚙️ Settings</button>
+        </div>
+      </div>
+
+      <!-- Console Tab -->
+      <div class="panel" id="viewConsole">
+        <div class="grid-2">
+          <div class="console-wrap">
+            <div class="console" id="logOut">Initializing...</div>
+            <div class="terminal-bar">
+              <span class="prompt">$</span>
+              <input type="text" id="termInput"
+                     placeholder="اكتب أمر... (pip install requests / npm install / ls ...)"
+                     onkeydown="if(event.key==='Enter') runCmd()">
+              <button onclick="runCmd()" id="termBtn">▶ Run</button>
+            </div>
+          </div>
+          <div class="side">
+            <button id="btnStart" class="btn-block primary" onclick="srvAction('start')">▶ START</button>
+            <button class="btn-block" onclick="srvAction('restart')">⟳ RESTART</button>
+            <button class="btn-block danger" onclick="srvAction('stop')">⏹ STOP</button>
+            <button class="btn-block" onclick="downloadServer()">⬇ Download ZIP</button>
+            <button class="btn-block danger" onclick="deleteServer()">🗑 DELETE SERVER</button>
+
+            <div class="stat"><div class="ico">⚡</div><div><small>STATUS</small><b id="statusTxt">Offline</b></div></div>
+            <div class="stat"><div class="ico">🧠</div><div><small>RAM</small><b id="memTxt">0 MB</b></div></div>
+            <div class="stat"><div class="ico">📄</div><div><small>MAIN FILE</small><b id="mainFileTxt" onclick="changeStartup()">Click to set</b></div></div>
+            <div class="stat"><div class="ico">📡</div><div><small>IP</small><b id="ipTxt">0.0.0.0</b></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Files Tab -->
+      <div class="panel" id="viewFiles" style="display:none">
+        <div class="fm-top">
+          <div>
+            <div style="font-weight:700;font-size:16px;">📁 File Manager</div>
+            <div class="path" id="pathBar"></div>
+          </div>
+          <div class="actions">
+            <button id="btnBack" class="btn btn-mini" onclick="goUp()" style="display:none">⬅ Back</button>
+            <button class="btn btn-mini" onclick="newFolder()">📁 Create Folder</button>
+            <button class="btn btn-mini btn-primary" onclick="document.getElementById('uplFiles').click()">📤 Upload Files</button>
+            <button class="btn btn-mini" onclick="document.getElementById('uplFolder').click()">📂 Upload Folder</button>
+          </div>
+        </div>
+        <input type="file" id="uplFiles" multiple hidden onchange="doUploadFiles(this)">
+        <input type="file" id="uplFolder" webkitdirectory directory multiple hidden onchange="doUploadFolder(this)">
+        <table class="table">
+          <thead><tr><th>Name</th><th>Size</th><th>Actions</th></tr></thead>
+          <tbody id="fileList"></tbody>
+        </table>
+      </div>
+
+      <!-- ENV Tab -->
+      <div class="panel" id="viewEnv" style="display:none; padding: 20px;">
+        <h3 style="margin-bottom:8px;">🌐 Environment Variables</h3>
+        <p style="color:var(--muted);font-size:13px;margin-bottom:16px;">
+          متغيرات البيئة تُمرّر للبوت عند التشغيل (مثل رقم الجوال، API Keys، إلخ).
+        </p>
+        <div id="envList"></div>
+        <div class="actions" style="margin-top:14px; display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="btn btn-mini" onclick="addEnvRow()">➕ Add Variable</button>
+          <button class="btn btn-mini btn-primary" onclick="saveEnv()">💾 Save</button>
+        </div>
+      </div>
+
+      <!-- Settings Tab -->
+      <div class="panel" id="viewSettings" style="display:none; padding: 20px;">
+        <h3 style="margin-bottom:8px;">⚙️ Server Settings</h3>
+        <p style="color:var(--muted);font-size:13px;margin-bottom:16px;">
+          اختر لغة التشغيل والملف الرئيسي.
+        </p>
+
+        <label style="display:block;font-size:12px;color:var(--muted);font-weight:600;margin:12px 0 6px;">
+          Runtime (لغة التشغيل)
+        </label>
+        <select class="runtime-select" id="runtimeSelect" onchange="changeRuntime()">
+          <option value="python">🐍 Python</option>
+          <option value="node">🟨 Node.js</option>
+          <option value="shell">🐚 Shell Script</option>
+        </select>
+
+        <label style="display:block;font-size:12px;color:var(--muted);font-weight:600;margin:16px 0 6px;">
+          Main File (الملف الرئيسي)
+        </label>
+        <input id="startupInput" placeholder="مثال: bot.py أو bot.js"
+               style="width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--border);background:rgba(0,0,0,.3);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:13px;outline:none;">
+        <button class="btn btn-primary" style="margin-top:12px;" onclick="saveStartup()">💾 Save Settings</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     EDITOR MODAL
+     ═══════════════════════════════════════════════════════════ -->
+<div id="editor-modal">
+  <div class="editor">
+    <div class="editor-top">
+      <div class="fn" id="ed-title">file</div>
+      <div class="actions">
+        <button class="btn btn-primary" onclick="saveFile()">💾 Save</button>
+        <button class="btn btn-danger" onclick="closeEditor()">✕ Exit</button>
+      </div>
+    </div>
+    <textarea id="ed-area" spellcheck="false"></textarea>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     GENERIC MODAL
+     ═══════════════════════════════════════════════════════════ -->
+<div id="modalBackdrop" class="modal-backdrop">
+  <div class="modal">
+    <h3 id="mTitle">Title</h3>
+    <input id="mIn" />
+    <div class="actions" style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;">
+      <button class="btn" onclick="closeM()">Cancel</button>
+      <button id="mConfirm" class="btn btn-primary">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PROFILE MODAL
+     ═══════════════════════════════════════════════════════════ -->
+<div id="profileModal" class="modal-backdrop">
+  <div class="modal">
+    <h3>👤 Profile</h3>
+    <div class="pf-row"><span>Username</span><b id="pfUser">-</b></div>
+    <div class="pf-row"><span>Email</span><b id="pfEmail">-</b></div>
+    <div class="pf-row"><span>Plan</span><b id="pfPlan">-</b></div>
+    <h3 style="margin-top:20px;">🔑 Change Password</h3>
+    <input id="pfOld" type="password" placeholder="Current password" style="margin-top:8px;width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--border);background:rgba(0,0,0,.3);color:var(--text);outline:none;">
+    <input id="pfNew" type="password" placeholder="New password (min 6)" style="margin-top:8px;width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--border);background:rgba(0,0,0,.3);color:var(--text);outline:none;">
+    <div class="actions" style="display:flex;justify-content:flex-end;gap:10px;margin-top:16px;">
+      <button class="btn" onclick="document.getElementById('profileModal').style.display='none'">Close</button>
+      <button class="btn btn-primary" onclick="changePw()">Change</button>
+    </div>
+    <div id="pfMsg" style="margin-top:8px;color:var(--muted);font-size:12px;min-height:16px;"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SETTINGS MODAL
+     ═══════════════════════════════════════════════════════════ -->
+<div id="settingsModal" class="modal-backdrop">
+  <div class="modal">
+    <h3>⚙️ Settings</h3>
+    <div class="set-row"><span>Console auto-refresh</span><div class="switch on" id="swPoll" onclick="toggleSw(this,'poll')"></div></div>
+    <div class="set-row"><span>Sound alerts</span><div class="switch" id="swSound" onclick="toggleSw(this,'sound')"></div></div>
+    <div class="set-row"><span>Accent theme</span>
+      <div style="display:flex;gap:10px;">
+        <div class="swatch active" title="Neon Purple" style="background:linear-gradient(135deg,#7c3aed,#2563eb);" onclick="setAccent('#7c3aed','#2563eb','#06b6d4',this)"></div>
+        <div class="swatch" title="Blood Red" style="background:linear-gradient(135deg,#ef4444,#dc2626);" onclick="setAccent('#ef4444','#dc2626','#f87171',this)"></div>
+        <div class="swatch" title="Emerald" style="background:linear-gradient(135deg,#34d399,#059669);" onclick="setAccent('#34d399','#059669','#6ee7b7',this)"></div>
+        <div class="swatch" title="Ocean Blue" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8);" onclick="setAccent('#3b82f6','#1d4ed8','#60a5fa',this)"></div>
+      </div>
+    </div>
+    <div class="actions" style="display:flex;justify-content:flex-end;margin-top:20px;">
+      <button class="btn btn-primary" onclick="document.getElementById('settingsModal').style.display='none'">Done</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  let currentSrv = null;
+  let poll = null;
+  let currentFile = null;
+  let currentPath = '';
+
+  const PREF = JSON.parse(localStorage.getItem('m7mad_pref') || '{"poll":true,"sound":false}');
+
+  // ═══════════════════════════════════════════════════════════
+  // Sidebar toggle (mobile)
+  // ═══════════════════════════════════════════════════════════
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+  }
+
+  function isAuthPage() {
+    return location.pathname.startsWith('/login') || location.pathname.startsWith('/create');
+  }
+
+  function safeRedirect(url) {
+    if (!isAuthPage()) location.href = url;
+  }
+
+  function statusClass(st) {
+    st = (st || '').toLowerCase();
+    if (st === 'running') return 'running';
+    if (st === 'installing' || st === 'starting') return 'installing';
+    if (st === 'banned') return 'banned';
+    return 'offline';
+  }
+
+  function toast(msg, type = 'ok') {
+    const el = document.createElement('div');
+    el.className = 'toast ' + (type === 'err' ? 'err' : 'ok');
+    el.textContent = msg;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 3000);
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // Load Python Host IP
+  // ═══════════════════════════════════════════════════════════
+  async function loadPythonHost() {
+    const ipTxt = document.getElementById('pyHostTxt');
+    try {
+      const r = await fetch('/servers');
+      if (r.redirected) { safeRedirect(r.url); return; }
+      const d = await r.json();
+      const port = location.port || 5000;
+      if (!d.servers || d.servers.length === 0) {
+        ipTxt.textContent = `Python Host: ${location.hostname}:${port}`;
+        return;
+      }
+      const key = d.servers[0].key || d.servers[0].folder;
+      const s = await fetch(`/server/stats/${encodeURIComponent(key)}`);
+      if (s.redirected) { safeRedirect(s.url); return; }
+      const sd = await s.json();
+      const ip = sd.ip || location.hostname;
+      ipTxt.textContent = `Python Host: ${ip}:${port}`;
+    } catch (e) {
+      const port = location.port || 5000;
+      ipTxt.textContent = `Python Host: ${location.hostname}:${port}`;
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // Load Servers
+  // ═══════════════════════════════════════════════════════════
+  async function loadServers() {
+    const r = await fetch('/servers');
+    if (r.redirected) { safeRedirect(r.url); return; }
+    const d = await r.json();
+    if (r.status === 503 && d.maintenance) { location.href = '/maintenance'; return; }
+
+    const cont = document.getElementById('cardsContainer');
+    cont.innerHTML = '';
+
+    fetch('/admin').then(res => {
+      if (!res.redirected && res.status === 200) {
+        document.getElementById('navAdmin').style.display = 'flex';
+      }
+    }).catch(() => {});
+
+    (d.servers || []).forEach(s => {
+      s.key = s.key || s.folder;
+      const div = document.createElement('div');
+      div.className = 'card';
+      const cls = statusClass(s.status);
+      const label = (s.status || 'Offline').toUpperCase();
+      const runtimeIcon = s.runtime === 'node' ? '🟨' : (s.runtime === 'shell' ? '🐚' : '🐍');
+      div.innerHTML = `
+        <div class="srv-title">${escapeHtml(s.title)}</div>
+        <div class="srv-sub">${escapeHtml(s.subtitle || '')} · ${runtimeIcon} ${s.runtime || 'python'}</div>
+        <div class="pill ${cls}"><span class="dot"></span>${label}</div>
+      `;
+      div.onclick = () => openServer(s);
+      cont.appendChild(div);
+    });
+  }
+
+  function openServer(s) {
+    currentSrv = s;
+    currentPath = '';
+    document.getElementById('homeView').style.display = 'none';
+    document.getElementById('serverView').style.display = 'block';
+    document.getElementById('navHome').classList.remove('active');
+    document.getElementById('srvHeader').textContent = s.title;
+    document.getElementById('srvSub').textContent = s.subtitle || '';
+    document.getElementById('mainFileTxt').textContent = s.startup_file || 'Click to set';
+    document.getElementById('startupInput').value = s.startup_file || '';
+    document.getElementById('runtimeSelect').value = s.runtime || 'python';
+    switchTab('console');
+    if (window.innerWidth < 900) toggleSidebar();
+  }
+
+  function goHome() {
+    document.getElementById('homeView').style.display = 'block';
+    document.getElementById('serverView').style.display = 'none';
+    document.getElementById('navHome').classList.add('active');
+    clearInterval(poll);
+    loadServers();
+    if (window.innerWidth < 900) {
+      const sb = document.getElementById('sidebar');
+      if (sb.classList.contains('open')) toggleSidebar();
+    }
+  }
+
+  function switchTab(t) {
+    ['console', 'files', 'env', 'settings'].forEach(x => {
+      const tab = document.getElementById('tab' + x.charAt(0).toUpperCase() + x.slice(1));
+      const view = document.getElementById('view' + x.charAt(0).toUpperCase() + x.slice(1));
+      if (tab) tab.classList.toggle('active', x === t);
+      if (view) view.style.display = (x === t) ? 'block' : 'none';
+    });
+
+    if (t === 'console') startPolling();
+    else clearInterval(poll);
+
+    if (t === 'files') loadFiles();
+    if (t === 'env') loadEnv();
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // Polling + Action
+  // ═══════════════════════════════════════════════════════════
+  async function startPolling() {
+    if (poll) clearInterval(poll);
+    const fn = async () => {
+      try {
+        const r = await fetch(`/server/stats/${encodeURIComponent(currentSrv.key)}`);
+        if (r.redirected) { safeRedirect(r.url); return; }
+        const d = await r.json();
+        document.getElementById('logOut').textContent = d.logs || 'No logs';
+        document.getElementById('statusTxt').textContent = d.status || 'Offline';
+        document.getElementById('memTxt').textContent = d.mem || '0 MB';
+        document.getElementById('ipTxt').textContent = d.ip || '';
+        const running = (d.status === 'Running' || d.status === 'Installing' || d.status === 'Starting');
+        document.getElementById('btnStart').disabled = running;
+        const lo = document.getElementById('logOut');
+        lo.scrollTop = lo.scrollHeight;
+      } catch (e) {}
+    };
+    fn();
+    if (PREF.poll !== false) poll = setInterval(fn, 2000);
+  }
+
+  async function srvAction(act) {
+    await fetch(`/server/action/${encodeURIComponent(currentSrv.key)}/${act}`, { method: 'POST' });
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // Terminal Command
+  // ═══════════════════════════════════════════════════════════
+  async function runCmd() {
+    const input = document.getElementById('termInput');
+    const cmd = input.value.trim();
+    if (!cmd) return;
+
+    const log = document.getElementById('logOut');
+    log.textContent += `\n$ ${cmd}\n`;
+
+    const btn = document.getElementById('termBtn');
+    btn.disabled = true;
+    btn.textContent = '⏳';
+
+    try {
+      const r = await fetch(`/server/exec/${encodeURIComponent(currentSrv.key)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cmd })
+      });
+      const d = await r.json();
+      if (d.success) {
+        if (d.stdout) log.textContent += d.stdout;
+        if (d.stderr) log.textContent += '\n[ERR] ' + d.stderr;
+        if (d.returncode !== 0) log.textContent += `\n[exit ${d.returncode}]\n`;
+      } else {
+        log.textContent += `❌ ${d.message || 'Failed'}\n`;
+      }
+      log.scrollTop = log.scrollHeight;
+    } catch (e) {
+      log.textContent += `❌ Connection error\n`;
+    }
+
+    btn.disabled = false;
+    btn.textContent = '▶ Run';
+    input.value = '';
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // Change Startup / Runtime
+  // ═══════════════════════════════════════════════════════════
+  function changeStartup() {
+    openM('Set Main File (مثال: bot.py أو bot.js)', currentSrv.startup_file || '', async (v) => {
+      await fetch(`/server/set-startup/${encodeURIComponent(currentSrv.key)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ file: v })
+      });
+      currentSrv.startup_file = v;
+      document.getElementById('mainFileTxt').textContent = v || 'Click to set';
+      document.getElementById('startupInput').value = v || '';
+      closeM();
+      toast('✅ تم حفظ الملف الرئيسي');
+    });
+  }
+
+  async function changeRuntime() {
+    const rt = document.getElementById('runtimeSelect').value;
+    const r = await fetch(`/server/runtime/${encodeURIComponent(currentSrv.key)}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ runtime: rt })
+    });
+    const d = await r.json();
+    if (d.success) {
+      currentSrv.runtime = rt;
+      toast('✅ Runtime: ' + rt);
+    }
+  }
+
+  async function saveStartup() {
+    const v = document.getElementById('startupInput').value.trim();
+    await fetch(`/server/set-startup/${encodeURIComponent(currentSrv.key)}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ file: v })
+    });
+    currentSrv.startup_file = v;
+    document.getElementById('mainFileTxt').textContent = v || 'Click to set';
+    toast('✅ تم الحفظ');
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // ENV Variables
+  // ═══════════════════════════════════════════════════════════
+  async function loadEnv() {
+    const r = await fetch(`/server/env/${encodeURIComponent(currentSrv.key)}`);
+    const d = await r.json();
+    const env = d.env || {};
+    const list = document.getElementById('envList');
+    list.innerHTML = '';
+    Object.keys(env).forEach(k => addEnvRow(k, env[k]));
+    if (Object.keys(env).length === 0) addEnvRow();
+  }
+
+  function addEnvRow(k = '', v = '') {
+    const list = document.getElementById('envList');
+    const row = document.createElement('div');
+    row.className = 'env-row';
+    row.innerHTML = `
+      <input type="text" placeholder="KEY" value="${escapeAttr(k)}" class="env-key">
+      <input type="text" placeholder="value" value="${escapeAttr(v)}" class="env-val">
+      <button onclick="this.parentElement.remove()">🗑</button>
+    `;
+    list.appendChild(row);
+  }
+
+  async function saveEnv() {
+    const rows = document.querySelectorAll('.env-row');
+    const env = {};
+    rows.forEach(r => {
+      const k = r.querySelector('.env-key').value.trim();
+      const v = r.querySelector('.env-val').value;
+      if (k) env[k] = v;
+    });
+
+    const r = await fetch(`/server/env/${encodeURIComponent(currentSrv.key)}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ env })
+    });
+    const d = await r.json();
+    if (d.success) toast('✅ ENV saved (' + Object.keys(env).length + ' vars)');
+    else toast('❌ ' + (d.message || 'Failed'), 'err');
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // File Manager
+  // ═══════════════════════════════════════════════════════════
+  async function loadFiles() {
+    const r = await fetch(`/files/list/${encodeURIComponent(currentSrv.key)}?path=${encodeURIComponent(currentPath)}`);
+    if (r.redirected) { safeRedirect(r.url); return; }
+    const data = await r.json();
+    if (!data.success) { currentPath = ''; return loadFiles(); }
+
+    document.getElementById('btnBack').style.display = (currentPath && currentPath.length > 0) ? 'inline-flex' : 'none';
+
+    const parts = (data.path || '').split('/').filter(Boolean);
+    let acc = '';
+    const crumbs = [`<span class="crumb"><a href="javascript:void(0)" onclick="jumpPath('')">📁 root</a></span>`];
+    for (const p of parts) {
+      acc = acc ? (acc + '/' + p) : p;
+      crumbs.push(`<span class="sep">/</span><span class="crumb"><a href="javascript:void(0)" onclick="jumpPath('${escapeAttr(acc)}')">${escapeHtml(p)}</a></span>`);
+    }
+    document.getElementById('pathBar').innerHTML = crumbs.join('');
+
+    const rows = [];
+    for (const d of (data.dirs || [])) {
+      const name = d.name;
+      rows.push(`
+        <tr>
+          <td><span class="name-link" onclick="openFolder('${escapeAttr(name)}')">📁 ${escapeHtml(name)}</span></td>
+          <td style="color:var(--muted)">—</td>
+          <td class="row-actions">
+            <button class="btn btn-mini" onclick="openFolder('${escapeAttr(name)}')">Open</button>
+            <button class="btn btn-mini" onclick="renameDir('${escapeAttr(name)}')">✏️</button>
+            <button class="btn btn-mini btn-danger" onclick="deleteDir('${escapeAttr(name)}')">🗑</button>
+          </td>
+        </tr>
+      `);
+    }
+    for (const f of (data.files || [])) {
+      const relFile = currentPath ? `${currentPath}/${f.name}` : f.name;
+      rows.push(`
+        <tr>
+          <td><span class="name-link" onclick="openEditor('${escapeAttr(relFile)}')">📄 ${escapeHtml(f.name)}</span></td>
+          <td>${escapeHtml(f.size || '')}</td>
+          <td class="row-actions">
+            ${f.name.toLowerCase().endsWith('.zip') ? `<button class="btn btn-mini" style="border-color:rgba(124,58,237,.4);color:var(--accent);" onclick="extractZip('${escapeAttr(f.name)}')">📦 Extract</button>` : ''}
+            <button class="btn btn-mini" onclick="renameFilePrompt('${escapeAttr(f.name)}')">✏️</button>
+            <button class="btn btn-mini btn-danger" onclick="deleteFilePrompt('${escapeAttr(f.name)}')">🗑</button>
+          </td>
+        </tr>
+      `);
+    }
+    document.getElementById('fileList').innerHTML = rows.join('');
+  }
+
+  function openFolder(name) {
+    currentPath = currentPath ? (currentPath + '/' + name) : name;
+    loadFiles();
+  }
+  function jumpPath(p) { currentPath = p || ''; loadFiles(); }
+  function goUp() {
+    if (!currentPath) return;
+    const parts = currentPath.split('/').filter(Boolean);
+    parts.pop();
+    currentPath = parts.join('/');
+    loadFiles();
+  }
+
+  function newFolder() {
+    openM('Create Folder', '', async (v) => {
+      await fetch(`/files/mkdir/${encodeURIComponent(currentSrv.key)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ path: currentPath, name: v })
+      });
+      loadFiles();
+      closeM();
+    });
+  }
+
+  function renameDir(oldName) {
+    openM('Rename Folder', oldName, async (v) => {
+      await fetch(`/files/rename/${encodeURIComponent(currentSrv.key)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ path: currentPath, old: oldName, new: v })
+      });
+      loadFiles();
+      closeM();
+    });
+  }
+
+  async function deleteDir(name) {
+    if (!confirm(`Delete folder "${name}"?`)) return;
+    await fetch(`/files/delete/${encodeURIComponent(currentSrv.key)}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ path: currentPath, name, kind: 'dir' })
+    });
+    loadFiles();
+  }
+
+  function renameFilePrompt(oldName) {
+    openM('Rename File', oldName, async (v) => {
+      await fetch(`/files/rename/${encodeURIComponent(currentSrv.key)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ path: currentPath, old: oldName, new: v })
+      });
+      loadFiles();
+      closeM();
+    });
+  }
+
+  async function deleteFilePrompt(name) {
+    if (!confirm(`Delete ${name}?`)) return;
+    await fetch(`/files/delete/${encodeURIComponent(currentSrv.key)}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ path: currentPath, name, kind: 'file' })
+    });
+    loadFiles();
+  }
+
+  async function doUploadFiles(input) {
+    if (!input.files || !input.files.length) return;
+    const fd = new FormData();
+    for (const f of input.files) fd.append('files', f);
+    await fetch(`/files/upload/${encodeURIComponent(currentSrv.key)}?path=${encodeURIComponent(currentPath)}`, {
+      method: 'POST', body: fd
+    });
+    input.value = '';
+    loadFiles();
+    toast('✅ Uploaded');
+  }
+
+  async function doUploadFolder(input) {
+    if (!input.files || !input.files.length) return;
+    const fd = new FormData();
+    for (const f of input.files) {
+      fd.append('files', f);
+      fd.append('relpaths', f.webkitRelativePath || f.name);
+    }
+    await fetch(`/files/upload/${encodeURIComponent(currentSrv.key)}?path=${encodeURIComponent(currentPath)}`, {
+      method: 'POST', body: fd
+    });
+    input.value = '';
+    loadFiles();
+    toast('✅ Folder uploaded');
+  }
+
+  async function openEditor(name) {
+    currentFile = name;
+    document.getElementById('ed-title').textContent = name;
+    const res = await fetch(`/files/content/${encodeURIComponent(currentSrv.key)}?file=${encodeURIComponent(name)}`);
+    if (res.redirected) { safeRedirect(res.url); return; }
+    const data = await res.json();
+    document.getElementById('ed-area').value = data.content || '';
+    document.getElementById('editor-modal').style.display = 'block';
+  }
+
+  async function saveFile() {
+    await fetch(`/files/save/${encodeURIComponent(currentSrv.key)}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ file: currentFile, content: document.getElementById('ed-area').value })
+    });
+    toast('✅ Saved');
+  }
+
+  function closeEditor() { document.getElementById('editor-modal').style.display = 'none'; }
+
+  async function extractZip(name) {
+    if (!confirm(`Extract "${name}"?`)) return;
+    const r = await fetch(`/files/extract/${encodeURIComponent(currentSrv.key)}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ path: currentPath, name })
+    });
+    const d = await r.json();
+    toast(d.success ? `✅ Extracted ${d.extracted} entries` : ('❌ ' + d.message), d.success ? 'ok' : 'err');
+    loadFiles();
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // Modals
+  // ═══════════════════════════════════════════════════════════
+  function openM(t, v, cb) {
+    document.getElementById('modalBackdrop').style.display = 'flex';
+    document.getElementById('mTitle').textContent = t;
+    document.getElementById('mIn').value = v || '';
+    document.getElementById('mConfirm').onclick = () => cb(document.getElementById('mIn').value);
+  }
+  function closeM() { document.getElementById('modalBackdrop').style.display = 'none'; }
+
+  // ═══════════════════════════════════════════════════════════
+  // New Server
+  // ═══════════════════════════════════════════════════════════
+  function newServerPrompt() {
+    document.getElementById('modalBackdrop').style.display = 'flex';
+    document.getElementById('mTitle').textContent = '➕ New Server';
+    document.getElementById('mIn').outerHTML = `
+      <input id="mIn" placeholder="Server Name" style="width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--border);background:rgba(0,0,0,.3);color:var(--text);font-size:14px;outline:none;">
+      <label style="display:block;font-size:12px;color:var(--muted);font-weight:600;margin:14px 0 6px;">Runtime</label>
+      <select id="mRuntime" style="width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--border);background:rgba(0,0,0,.3);color:var(--text);font-size:14px;outline:none;">
+        <option value="python">🐍 Python</option>
+        <option value="node">🟨 Node.js</option>
+        <option value="shell">🐚 Shell Script</option>
+      </select>
+    `;
+    document.getElementById('mConfirm').onclick = async () => {
+      const name = document.getElementById('mIn').value.trim();
+      const runtime = document.getElementById('mRuntime').value;
+      if (!name) return;
+      const res = await fetch('/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, runtime })
+      });
+      const d = await res.json();
+      if (!d.success) { toast('❌ ' + (d.message || 'Failed'), 'err'); return; }
+      closeM();
+      toast('✅ Server created');
+      loadServers();
+      loadPythonHost();
+    };
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // Delete Server
+  // ═══════════════════════════════════════════════════════════
+  async function deleteServer() {
+    if (!currentSrv) return;
+    if (!confirm(`⚠️ Delete server "${currentSrv.title}"?\nAll files will be lost!`)) return;
+    const r = await fetch(`/api/server/delete/${encodeURIComponent(currentSrv.key)}`, { method: 'POST' });
+    const d = await r.json();
+    if (d.success) { goHome(); toast('🗑️ Server deleted'); }
+    else toast('❌ ' + (d.message || 'Failed'), 'err');
+  }
+
+  function downloadServer() {
+    if (!currentSrv) return;
+    location.href = '/server/download/' + encodeURIComponent(currentSrv.key);
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // Profile + Settings
+  // ═══════════════════════════════════════════════════════════
+  async function openProfile() {
+    document.getElementById('profileModal').style.display = 'flex';
+    document.getElementById('pfMsg').textContent = '';
+    try {
+      const r = await fetch('/api/user/profile');
+      const d = await r.json();
+      if (d.success) {
+        document.getElementById('pfUser').textContent = d.username || '-';
+        document.getElementById('pfEmail').textContent = d.email || '-';
+        document.getElementById('pfPlan').textContent = d.is_admin ? '👑 OWNER' : (d.premium ? '⭐ PREMIUM' : 'NORMAL');
+      }
+    } catch (e) {}
+  }
+
+  async function changePw() {
+    const old_password = document.getElementById('pfOld').value;
+    const new_password = document.getElementById('pfNew').value;
+    const r = await fetch('/api/user/change-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ old_password, new_password })
+    });
+    const d = await r.json();
+    document.getElementById('pfMsg').textContent = d.message || (d.success ? 'Done ✅' : 'Failed');
+    if (d.success) {
+      document.getElementById('pfOld').value = '';
+      document.getElementById('pfNew').value = '';
+    }
+  }
+
+  function openSettings() {
+    document.getElementById('swPoll').classList.toggle('on', PREF.poll !== false);
+    document.getElementById('swSound').classList.toggle('on', !!PREF.sound);
+    document.getElementById('settingsModal').style.display = 'flex';
+  }
+
+  function toggleSw(el, k) {
+    el.classList.toggle('on');
+    PREF[k] = el.classList.contains('on');
+    localStorage.setItem('m7mad_pref', JSON.stringify(PREF));
+  }
+
+  function setAccent(a, a2, a3, el) {
+    document.documentElement.style.setProperty('--accent', a);
+    document.documentElement.style.setProperty('--accent2', a2);
+    document.documentElement.style.setProperty('--accent3', a3);
+    document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
+    if (el) el.classList.add('active');
+    localStorage.setItem('m7mad_accent', JSON.stringify([a, a2, a3]));
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // Announcement
+  // ═══════════════════════════════════════════════════════════
+  async function loadAnnouncement() {
+    try {
+      const r = await fetch('/api/announcement');
+      const d = await r.json();
+      if (d.maintenance_mode) { location.href = '/maintenance'; return; }
+      if (d.announcement) {
+        document.getElementById('annTxt').textContent = d.announcement;
+        document.getElementById('annBar').style.display = 'block';
+      }
+    } catch (e) {}
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // Helpers
+  // ═══════════════════════════════════════════════════════════
+  function escapeHtml(s) {
+    return (s || '')
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#039;');
+  }
+  function escapeAttr(s) {
+    return escapeHtml(s).replaceAll('\\', '\\\\');
+  }
+
+  // Restore accent
+  try {
+    const saved = JSON.parse(localStorage.getItem('m7mad_accent') || 'null');
+    if (saved && saved.length === 3) {
+      document.documentElement.style.setProperty('--accent', saved[0]);
+      document.documentElement.style.setProperty('--accent2', saved[1]);
+      document.documentElement.style.setProperty('--accent3', saved[2]);
+    }
+  } catch (e) {}
+
+  // Close sidebar when clicking outside on mobile
+  document.addEventListener('click', (e) => {
+    if (window.innerWidth < 900) {
+      const sb = document.getElementById('sidebar');
+      const toggle = e.target.closest('.mobile-toggle');
+      if (sb.classList.contains('open') && !toggle && !sb.contains(e.target)) {
+        sb.classList.remove('open');
+      }
+    }
+    const m = document.getElementById('dotsMenu');
+    if (m) m.style.display = 'none';
+  });
+
+  // ═══════════════════════════════════════════════════════════
+  // INIT
+  // ═══════════════════════════════════════════════════════════
+  document.addEventListener('DOMContentLoaded', () => {
+    loadServers();
+    loadPythonHost();
+    loadAnnouncement();
+  });
+</script>
+</body>
+</html>

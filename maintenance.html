@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Maintenance · M7MAD_FF PANEL</title>
+  <style>
+    :root {
+      --bg1: #0a0e1a;
+      --bg2: #111827;
+      --glass: rgba(255,255,255,.06);
+      --border: rgba(255,255,255,.10);
+      --muted: rgba(255,255,255,.7);
+      --text: #f0f4ff;
+      --accent: #7c3aed;
+      --accent2: #2563eb;
+      --accent3: #06b6d4;
+      --shadow: 0 18px 60px rgba(0,0,0,.7);
+      --radius: 20px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      text-align: center;
+      background: 
+        radial-gradient(circle at 20% 20%, rgba(124,58,237,.15), transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(6,182,212,.10), transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(37,99,235,.05), transparent 70%),
+        var(--bg1);
+      background-attachment: fixed;
+      overflow: hidden;
+      position: relative;
+    }
+    /* تأثير الجزيئات المتحركة */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image: 
+        radial-gradient(2px 2px at 10% 20%, rgba(255,255,255,.4), transparent),
+        radial-gradient(2px 2px at 30% 60%, rgba(255,255,255,.2), transparent),
+        radial-gradient(2px 2px at 50% 30%, rgba(255,255,255,.3), transparent),
+        radial-gradient(2px 2px at 70% 80%, rgba(255,255,255,.2), transparent),
+        radial-gradient(2px 2px at 90% 40%, rgba(255,255,255,.3), transparent);
+      background-size: 200px 200px;
+      opacity: .5;
+      animation: twinkle 7s infinite alternate;
+    }
+    @keyframes twinkle {
+      0% { opacity: .2; }
+      100% { opacity: .7; }
+    }
+
+    .card {
+      width: min(480px, 92vw);
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+      border-radius: var(--radius);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: var(--shadow);
+      padding: 36px 32px;
+      position: relative;
+      z-index: 1;
+      animation: fadeIn .6s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: -1px;
+      left: -1px;
+      right: -1px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+
+    .icon-wrapper {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(124,58,237,.15), rgba(6,182,212,.10));
+      border: 2px solid var(--border);
+      display: grid;
+      place-items: center;
+      font-size: 44px;
+      box-shadow: 0 0 60px rgba(124,58,237,.12);
+      position: relative;
+    }
+    .icon-wrapper::after {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      border-top-color: var(--accent);
+      border-right-color: var(--accent2);
+      animation: spin 3s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    h1 {
+      margin: 18px 0 8px;
+      font-size: 28px;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent), var(--accent3));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    p {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.7;
+      max-width: 380px;
+      margin: 0 auto;
+      font-weight: 500;
+    }
+    p .highlight {
+      color: var(--accent);
+      -webkit-text-fill-color: var(--accent);
+      font-weight: 600;
+    }
+
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+      padding: 10px 20px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid var(--border);
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 600;
+      width: fit-content;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .status-indicator .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--warn);
+      animation: pulse 1.5s infinite;
+    }
+    .status-indicator .dot.active { background: var(--accent); }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: .4; transform: scale(.8); }
+    }
+
+    .refresh-note {
+      margin-top: 14px;
+      font-size: 12px;
+      color: rgba(255,255,255,.25);
+      font-weight: 500;
+      letter-spacing: .3px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon-wrapper">🛠️</div>
+    <h1>Under Maintenance</h1>
+    <p>
+      The panel is temporarily down for maintenance by the owner.<br>
+      Please check back soon — this page refreshes automatically.
+    </p>
+
+    <div class="status-indicator">
+      <span class="dot"></span>
+      <span>Maintenance Mode Active</span>
+    </div>
+
+    <div class="refresh-note">🔄 Auto-refresh in 15 seconds</div>
+  </div>
+
+<script>
+setInterval(async() => {
+  try {
+    const r = await fetch('/api/announcement');
+    const d = await r.json();
+    if (!d.maintenance_mode) location.href = '/';
+  } catch(e) {}
+}, 15000);
+</script>
+</body>
+</html>
