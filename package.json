@@ -1,0 +1,9 @@
+{
+  "name": "m7mad-ff-panel",
+  "version": "2.0.0",
+  "description": "M7MAD_FF Hosting Panel",
+  "dependencies": {
+    "@whiskeysockets/baileys": "^6.7.9",
+    "pino": "^9.5.0"
+  }
+}
